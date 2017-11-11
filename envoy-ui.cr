@@ -66,14 +66,16 @@ class EnvoyClient
   private def parse_clusters_response(body, clusters)
     body.lines.sort.reduce(clusters) do |memo, line|
       fields = line.split(/::/)
-      cluster_name = fields.first
-      cluster = (memo[cluster_name] ||= EnvoyCluster.new(cluster_name))
-
-      if fields[0] == "version_info"
+      if fields[0] =~ /version_info/
         # do nothing
       elsif fields[1] =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:/
+        cluster_name = fields.first
+        cluster = (memo[cluster_name] ||= EnvoyCluster.new(cluster_name))
         cluster.add_node_value(fields[1], fields[2], fields[3])
       else
+        cluster_name = fields.first
+        cluster = (memo[cluster_name] ||= EnvoyCluster.new(cluster_name))
+
         case fields.size
         when 4
           cluster.add_setting(fields[1], fields[2], fields[3])
