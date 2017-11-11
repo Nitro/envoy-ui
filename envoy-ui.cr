@@ -46,7 +46,7 @@ end
 # and returns some data structures containing the parsed data.
 class EnvoyClient
   def initialize(@host : String, @port : Int32)
-    @client = HTTP::Client.new("docker1", 9901)
+    @client = HTTP::Client.new(@host, @port)
   end
 
   def fetch_clusters
