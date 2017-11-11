@@ -128,6 +128,11 @@ OptionParser.parse! do |parser|
   parser.on("--help", "Show this help")                               { puts parser; exit }
 end
 
+puts "Envoy UI starting ------------------------"
+puts " * Envoy address: #{host}:#{port}"
+puts " * Listening on:  0.0.0.0:#{listen_port}"
+puts "------------------------------------------"
+
 server = HTTP::Server.new("0.0.0.0", listen_port, [
   HTTP::ErrorHandler.new,
   HTTP::LogHandler.new
