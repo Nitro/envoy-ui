@@ -6,7 +6,10 @@
 require "http/client"
 require "http/server"
 require "ecr"
+require "option_parser"
 
+# An EnvoyCluster represents all the data and stats about a single
+# cluster, including all the services and some settings.
 class EnvoyCluster
   @name : String?
   @version : String?
@@ -39,6 +42,8 @@ class EnvoyCluster
   end
 end
 
+# An EnvoyClient connects to the Envoy proxy /clusters and /stats endpoints
+# and returns some data structures containing the parsed data.
 class EnvoyClient
   def initialize(@host : String, @port : Int32)
     @client = HTTP::Client.new("docker1", 9901)
@@ -90,6 +95,7 @@ class EnvoyClient
   end
 end
 
+# Web Views ----------------------------------------------
 class ClustersECR
   @clusters : Hash(String, EnvoyCluster?)
   @server_stats : String
@@ -103,12 +109,28 @@ class ServerStatsECR
   def initialize(@server_stats); end
   ECR.def_to_s "stats.ecr"
 end
+# --------------------------------------------------------
 
-server = HTTP::Server.new("0.0.0.0", 8080, [
+
+
+# Main ---------------------------------------------------
+host = "127.0.0.1"
+port = 9901
+listen_port = 8080
+
+OptionParser.parse! do |parser|
+  parser.banner = "Usage: envoy-ui [arguments]"
+  parser.on("-h HOSTNAME", "--host=HOSTNAME", "Envoy proxy hostname") { |h| host = h.to_s }
+  parser.on("-p PORT", "--port=PORT", "Envoy proxy port")             { |p| port = p.to_i }
+  parser.on("-l PORT", "--listen-port=PORT", "Port to listen on")     { |l| listen_port = l.to_i }
+  parser.on("--help", "Show this help")                               { puts parser; exit }
+end
+
+server = HTTP::Server.new("0.0.0.0", listen_port, [
   HTTP::ErrorHandler.new,
   HTTP::LogHandler.new
 ]) do |context|
-  client = EnvoyClient.new("docker1", 9901)
+  client = EnvoyClient.new(host, port)
   context.response.content_type = "text/html"
   clusters = client.fetch_clusters
 
