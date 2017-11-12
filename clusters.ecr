@@ -11,6 +11,7 @@
       color: #FC7307;
       font-weight: bold;
       font-family: source code pro, consolas, courier new, serif;
+      margin-bottom: 10px;
     }
     table {
       font-size: 10px;
@@ -44,6 +45,9 @@
     .toprow {
       font-weight: bold;
       background: #BFD7F3;
+    }
+    .settings {
+        text-align: right;
     }
     .values {
       text-align: right;
@@ -83,7 +87,7 @@
       <th><%= setting %></th>
       <%- end %>
    </tr>
-   <tr>
+   <tr class="settings">
       <%- cluster.long_settings.each do |setting, values| -%>
       <%- values.each do |(_, value)| -%>
       <td><%= value %></td>
