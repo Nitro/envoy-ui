@@ -50,17 +50,44 @@ class EnvoyClient
   end
 
   def fetch_clusters
-    response = @client.get "/clusters"
     clusters = Hash(String, EnvoyCluster?).new
-    return clusters if response.status_code != 200
-    parse_clusters_response(response.body, clusters)
+    response = begin
+      @client.get "/clusters"
+    rescue ex : Errno
+      return {err: ex.to_s, clusters: clusters}
+    end
+
+    if response.status_code != 200
+      return {
+        err: "Bad status code from server: #{response.status_code}",
+        clusters: clusters
+      }
+    end
+
+    {
+      err: nil,
+      clusters: parse_clusters_response(response.body, clusters)
+    }
   end
 
   def fetch_server_stats
-    response = @client.get "/stats"
     stats = Hash(String, String).new
-    return stats if response.status_code != 200
-    parse_stats_response(response.body, stats)
+    response = begin
+      @client.get "/stats"
+    rescue ex : Errno
+      return {err: ex.to_s, stats: stats}
+    end
+    if response.status_code != 200
+      return {
+        err: "Bad status code from server: #{response.status_code}",
+        stats: stats
+      }
+    end
+
+    {
+      err: nil,
+      stats: parse_stats_response(response.body, stats)
+    }
   end
 
   private def parse_clusters_response(body, clusters)
@@ -101,7 +128,9 @@ end
 class ClustersECR
   @clusters : Hash(String, EnvoyCluster?)
   @server_stats : String
-  def initialize(@clusters, @server_stats); end
+  @errors : Array(String)
+
+  def initialize(@clusters, @server_stats, @errors); end
   ECR.def_to_s "clusters.ecr"
 end
 
@@ -137,13 +166,22 @@ server = HTTP::Server.new("0.0.0.0", listen_port, [
   HTTP::ErrorHandler.new,
   HTTP::LogHandler.new
 ]) do |context|
+  errors = [] of String
   client = EnvoyClient.new(host, port)
   context.response.content_type = "text/html"
-  clusters = client.fetch_clusters
 
-  stats = client.fetch_server_stats
-  server_stats = ServerStatsECR.new(stats).to_s
-  context.response.print ClustersECR.new(clusters, server_stats).to_s
+  clusters_result = client.fetch_clusters
+  errors << "clusters: #{clusters_result[:err].as(String)}" if clusters_result[:err]
+
+  stats_result = client.fetch_server_stats
+  errors << "stats: #{stats_result[:err].as(String)}" if stats_result[:err]
+
+  server_stats = ServerStatsECR.new(
+    stats_result[:stats]
+  ).to_s
+  context.response.print ClustersECR.new(
+    clusters_result[:clusters], server_stats, errors
+  ).to_s
 end
 
 server.listen

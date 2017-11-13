@@ -58,10 +58,24 @@
     .node {
       padding: 3px;
     }
+    .error {
+      color: red;
+      border: 1px solid red;
+      background: #FFBFBF;
+      padding: 1ex;
+      font-weight: bold;
+      font-size: large;
+      border-radius: 5px;
+      text-align: center;
+      margin: 1em;
+    }
   </style>
 </head>
 
 <h1>Envoy Proxy</h1>
+<%- @errors.each do |error| -%>
+<div class="error"><%= error %></div>
+<%- end -%>
 <%= @server_stats %>
 
 <%- @clusters.each do |name, cluster| -%>
