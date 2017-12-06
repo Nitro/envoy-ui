@@ -44,21 +44,15 @@ class EnvoyClient
     @client = HTTP::Client.new("docker1", 9901)
   end
 
-
   def fetch_clusters
     response = @client.get "/clusters"
-    puts response.status_code # => 200
-
     clusters = Hash(String, EnvoyCluster?).new
     return clusters if response.status_code != 200
-
     parse_clusters_response(response.body, clusters)
   end
 
   def fetch_server_stats
     response = @client.get "/stats"
-    puts response.status_code # => 200
-
     stats = Hash(String, String).new
     return stats if response.status_code != 200
     parse_stats_response(response.body, stats)
@@ -110,7 +104,10 @@ class ServerStatsECR
   ECR.def_to_s "stats.ecr"
 end
 
-server = HTTP::Server.new(8080) do |context|
+server = HTTP::Server.new("0.0.0.0", 8080, [
+  HTTP::ErrorHandler.new,
+  HTTP::LogHandler.new
+]) do |context|
   client = EnvoyClient.new("docker1", 9901)
   context.response.content_type = "text/html"
   clusters = client.fetch_clusters

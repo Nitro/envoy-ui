@@ -1,2 +1,4 @@
 *.swp
 *.swo
+envoy-ui
+*.dwarf
