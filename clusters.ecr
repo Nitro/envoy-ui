@@ -1,0 +1,133 @@
+<head>
+  <style type="text/css">
+    body {
+      font-family: helvetica, Arial, sans-serif;
+      font-weight: normal;
+      color: black;
+      background: white;
+    }
+    h1 {
+      padding-left: 2%;
+      color: #FC7307;
+      font-weight: bold;
+      font-family: source code pro, consolas, courier new, serif;
+    }
+    table {
+      font-size: 10px;
+      border: 1px solid;
+      width: 90%;
+      margin-left: 2%;
+      margin-right: 2%;
+      margin-bottom: 15px;
+      border-collapse: collapse;
+      border-style: none;
+    }
+    th,td {
+      border: 1px solid black;
+      margin: 0px;
+    }
+    .clustername {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: left;
+      color: #FC7307;
+      background: white;
+      padding-left: 10px;
+      font-family: source code pro, consolas, courier new, serif;
+    }
+    .headers {
+      text-align: right;
+      font-size: 12px;
+      color: #236AB9;
+      background: #D4E4F7;
+    }
+    .toprow {
+      font-weight: bold;
+      background: #BFD7F3;
+    }
+    .values {
+      text-align: right;
+      font-size: 12px;
+      background: #EEEEEE;
+      font-family: source code pro, consolas, courier new, serif;
+    }
+    .node {
+      padding: 3px;
+    }
+  </style>
+</head>
+
+<h1>Envoy Proxy</h1>
+<%= @server_stats %>
+
+<%- @clusters.each do |name, cluster| -%>
+<%- next if cluster.nil? -%>
+<table>
+   <tr>
+      <th colspan="5" class="clustername"><%= name %></th>
+   </tr>
+   <tr class="toprow">
+      <%- cluster.long_settings.each do |setting, values| -%>
+      <th colspan="<%= values.keys.size %>">
+         <%= setting %>
+      </th>
+      <%- end %>
+   </tr>
+   <tr class="headers">
+      <%- cluster.long_settings.each do |setting, values| -%>
+      <%- values.keys.each do |sub| -%>
+      <th><%= sub %></th>
+      <%- end %>
+      <%- end %>
+      <%- cluster.short_settings.keys.each do |setting| -%>
+      <th><%= setting %></th>
+      <%- end %>
+   </tr>
+   <tr>
+      <%- cluster.long_settings.each do |setting, values| -%>
+      <%- values.each do |(_, value)| -%>
+      <td><%= value %></td>
+      <%- end -%>
+      <%- end -%>
+      <%- cluster.short_settings.each do |(_, value)| -%>
+      <td><%= value %></td>
+      <%- end -%>
+   </tr>
+   <tr class="toprow">
+      <th rowspan="2">nodes</th>
+      <th colspan="3">connections</th>
+      <th colspan="5">requests</th>
+      <th colspan="3">location</th>
+   </tr>
+   <tr class="headers">
+      <th>cx_total</th>
+      <th>cx_act</th>
+      <th>cx_conn_fail</th>
+      <th>rq_act</th>
+      <th>rq_err</th>
+      <th>rq_succ</th>
+      <th>rq_timeout</th>
+      <th>rq_tot</th>
+      <th>region</th>
+      <th>zone</th>
+      <th>sub_zone</th>
+   </tr>
+
+   <%- cluster.nodes.each do |node_name, node| -%>
+   <tr class="values">
+      <td class="node"><%= node_name %></td>
+      <td><%= node["cx_total"]? %></td>
+      <td><%= node["cx_active"]? %></td>
+      <td><%= node["cx_connect_fail"]? %></td>
+      <td><%= node["rq_active"]? %></td>
+      <td><%= node["rq_error"]? %></td>
+      <td><%= node["rq_success"]? %></td>
+      <td><%= node["rq_timeout"]? %></td>
+      <td><%= node["rq_total"]? %></td>
+      <td><%= node["region"]? %></td>
+      <td><%= node["zone"]? %></td>
+      <td><%= node["sub_zone"]? %></td>
+   </tr>
+   <%- end -%>
+</table>
+<%- end -%>

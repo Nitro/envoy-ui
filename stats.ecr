@@ -1,0 +1,13 @@
+<table>
+  <tr class="headers">
+    <%- @server_stats.keys.each do |key| -%>
+      <th><%= key %></th>
+    <%- end -%>
+  <tr>
+  <tr class="values">
+    <%- @server_stats.values.each do |value| -%>
+      <td><%= value %></td>
+    <%- end -%>
+  <tr>
+</table>
+<hr/>
