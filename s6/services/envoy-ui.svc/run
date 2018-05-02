@@ -1,0 +1,17 @@
+#!/bin/sh
+
+die() {
+	echo $1 >&2
+	exit 1
+}
+
+# Validate that we got a complete setup
+test -z $ENVOY_UI_HOST && die "Missing ENVOY_UI_HOST"
+test -z $ENVOY_UI_PORT && die "Missing ENVOY_UI_PORT"
+test -z $ENVOY_UI_LISTEN_PORT && die "Missing ENVOY_UI_LISTEN_PORT"
+
+# Start up with the right options
+/envoy-ui/envoy-ui \
+	-h ${ENVOY_UI_HOST} \
+	-p ${ENVOY_UI_PORT} \
+	-l ${ENVOY_UI_LISTEN_PORT} \
