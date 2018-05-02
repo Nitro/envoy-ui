@@ -47,6 +47,7 @@ end
 class EnvoyClient
   def initialize(@host : String, @port : Int32)
     @client = HTTP::Client.new(@host, @port)
+    @client.connect_timeout = 2
   end
 
   def fetch_clusters
