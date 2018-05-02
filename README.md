@@ -4,10 +4,10 @@ Envoy UI
 A simple UI for Lyft's Envoy proxy that replicates some of the functionality of
 the HAproxy stats page. Intended to talk to a single instance of the proxy.
 
-Fetches statistics from `/clusters` on the Envoy node and renders a single page
-with a more human-readable view of the statistics. Best used for instances that
-are gateway nodes or Internet-facing headends. Each view is a snapshot in time
-and does not auto-update.
+Fetches statistics from `/clusters` and `/stats` on the Envoy node and renders
+a single page with a more human-readable view of the statistics. Best used for
+instances that are gateway nodes or Internet-facing headends. Each view is a
+snapshot in time and does not auto-update.
 
 Sample dashboard page for a proxy instance:
 ![Envoy UI](assets/envoy-ui.png)
