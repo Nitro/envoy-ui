@@ -12,6 +12,14 @@ snapshot in time and does not auto-update.
 Sample dashboard page for a proxy instance:
 ![Envoy UI](assets/envoy-ui.png)
 
+Installation
+------------
+
+You may either use the pre-built [Docker
+image](https://hub.docker.com/r/gonitro/envoy-ui/) or build the binaries
+yourself natively with [Crystal](https://crystal-lang.org). It has been
+tested on Linux and macOS.
+
 Configuration
 -------------
 
