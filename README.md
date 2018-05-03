@@ -1,6 +1,9 @@
 Envoy UI
 ========
 
+[![](https://images.microbadger.com/badges/image/gonitro/envoy-ui.svg)](https://microbadger.com/images/gonitro/envoy-ui "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/gonitro/envoy-ui.svg)](https://microbadger.com/images/gonitro/envoy-ui "Get your own version badge on microbadger.com")
+
 A simple UI for Lyft's Envoy proxy that replicates some of the functionality of
 the HAproxy stats page. Intended to talk to a single instance of the proxy.
 
