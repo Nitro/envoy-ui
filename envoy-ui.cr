@@ -163,7 +163,7 @@ puts " * Envoy address: #{host}:#{port}"
 puts " * Listening on:  0.0.0.0:#{listen_port}"
 puts "------------------------------------------"
 
-server = HTTP::Server.new("0.0.0.0", listen_port, [
+server = HTTP::Server.new([
   HTTP::ErrorHandler.new,
   HTTP::LogHandler.new
 ]) do |context|
@@ -185,4 +185,5 @@ server = HTTP::Server.new("0.0.0.0", listen_port, [
   ).to_s
 end
 
+server.bind_tcp("0.0.0.0", listen_port)
 server.listen
