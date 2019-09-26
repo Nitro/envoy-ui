@@ -150,7 +150,7 @@ host = "127.0.0.1"
 port = 9901
 listen_port = 8080
 
-OptionParser.parse! do |parser|
+OptionParser.parse do |parser|
   parser.banner = "Usage: envoy-ui [arguments]"
   parser.on("-h HOSTNAME", "--host=HOSTNAME", "Envoy proxy hostname") { |h| host = h.to_s }
   parser.on("-p PORT", "--port=PORT", "Envoy proxy port")             { |p| port = p.to_i }
