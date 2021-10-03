@@ -54,7 +54,7 @@ class EnvoyClient
     clusters = Hash(String, EnvoyCluster?).new
     response = begin
       @client.get "/clusters"
-    rescue ex : Errno
+    rescue ex : IO::Error
       return {err: ex.to_s, clusters: clusters}
     end
 
@@ -75,7 +75,7 @@ class EnvoyClient
     stats = Hash(String, String).new
     response = begin
       @client.get "/stats"
-    rescue ex : Errno
+    rescue ex : IO::Error
       return {err: ex.to_s, stats: stats}
     end
     if response.status_code != 200
