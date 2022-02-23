@@ -152,10 +152,10 @@ listen_port = 8080
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: envoy-ui [arguments]"
-  parser.on("-h HOSTNAME", "--host=HOSTNAME", "Envoy proxy hostname") { |h| host = h.to_s }
-  parser.on("-p PORT", "--port=PORT", "Envoy proxy port")             { |p| port = p.to_i }
-  parser.on("-l PORT", "--listen-port=PORT", "Port to listen on")     { |l| listen_port = l.to_i }
-  parser.on("--help", "Show this help")                               { puts parser; exit }
+  parser.on("-h HOSTNAME", "--host=HOSTNAME", "Envoy proxy hostname (#{host})")   { |h| host = h.to_s }
+  parser.on("-p PORT", "--port=PORT", "Envoy proxy port (#{port})")               { |p| port = p.to_i }
+  parser.on("-l PORT", "--listen-port=PORT", "Port to listen on (#{listen_port})"){ |l| listen_port = l.to_i }
+  parser.on("--help", "Show this help")                                           { puts parser; exit }
 end
 
 puts "Envoy UI starting ------------------------"
